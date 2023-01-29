@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { searchMovie } from '../../shared/services/api';
+import css from './movies.module.css';
 
 const Movies = ({ children }) => {
   const [data, setData] = useState(null);
@@ -29,30 +30,36 @@ const Movies = ({ children }) => {
 
   return (
     <>
-      <h2>Movies</h2>
+      <div className={css.wrap}>
+        <h2 className={css.title}>Search movies:</h2>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          value={query}
-          onChange={handleChange}
-          name="search"
-          type="text"
-        />
-        <button type="submit">Search</button>
-      </form>
-      <ul>
+        <form onSubmit={handleSubmit} className={css.movieForm}>
+          <input
+            value={query}
+            onChange={handleChange}
+            name="search"
+            type="text"
+            placeholder="Type here"
+            className={css.movieInput}
+          />
+          <button type="submit" className={css.btn}>
+            Search
+          </button>
+        </form>
+      </div>
+      <ul className={css.list}>
         {query ? (
           loading ? (
             'Loading...'
           ) : (
             data.map(({ title, id }) => (
-              <li key={id}>
+              <li key={id} className={css.listItem}>
                 <NavLink to={`/movies/${id}`}>{title}</NavLink>
               </li>
             ))
           )
         ) : (
-          <p>type query</p>
+          <p className={css.descr}>...</p>
         )}
       </ul>
     </>

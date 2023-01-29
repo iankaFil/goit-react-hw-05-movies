@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { getMovieReviews } from '../../shared/services/api';
+import css from './reviews.module.css';
 
 const Reviews = () => {
   const [data, setData] = useState(null);
@@ -29,10 +30,10 @@ const Reviews = () => {
       {loading ? (
         'Loading...'
       ) : data && data.length > 0 ? (
-        <ul>
+        <ul className={css.list}>
           {data.map(({ author, content, id }) => (
-            <li key={id}>
-              <p>{author}</p>
+            <li key={id} className={css.listItem}>
+              <p className={css.listDescr}>{author}</p>
               {content && content}
             </li>
           ))}
