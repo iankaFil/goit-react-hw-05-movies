@@ -17,17 +17,18 @@
 
 .btn {
     padding: 9px 9px 9px 25px;
-    background-color: orange;
+    color: orange;
     font-size: 16px;
     border: none;
-    color: #fff;
+    background-color: #fff;
     border-radius: 7px;
     margin: 20px 0 0 5px;
 }
 
 .btn:hover {
-    background-color: rgb(255, 141, 2);
+    color: #272727;
     cursor: pointer;
+    fill: #272727;
 }
 
 .btn::before {
@@ -38,6 +39,7 @@
     width: 15px;
     height: 15px;
     left: 10px;
+
 }
 
 .btnList {
