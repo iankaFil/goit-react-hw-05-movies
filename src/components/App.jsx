@@ -8,10 +8,6 @@ import { Routes, Route, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import css from './app.module.css';
 export const App = () => {
-  // const navItems = {
-  //   href: '',
-  // };
-
   const StyledLink = styled(NavLink)`
     color: #e9e9e9;
     font-size: 30px;
