@@ -4,7 +4,7 @@ import { ListMovies, MovieItem } from './home.styled';
 import { getTrendingMovies } from '../../shared/services/api';
 import css from './home.module.css';
 
-const Home = ({ children }) => {
+const Home = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
