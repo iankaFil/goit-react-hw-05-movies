@@ -1,11 +1,11 @@
-import { useParams, Link, Outlet, useNavigate } from 'react-router-dom';
+import { useParams, Link, Outlet, useLocation } from 'react-router-dom';
 import { useState, useEffect, Suspense } from 'react';
 import { getMovieDetails } from '../../shared/services/api';
 import css from './movie-details.module.css';
+import noMovieImg from '../../img/no-poster-available.jpg';
+import { ColorRing } from 'react-loader-spinner';
 
 const MovieDetails = () => {
-  const navigate = useNavigate();
-
   const { movieId } = useParams();
 
   const [data, setData] = useState(null);
@@ -20,6 +20,8 @@ const MovieDetails = () => {
         setLoading(false);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     getData();
@@ -34,21 +36,40 @@ const MovieDetails = () => {
     return arrGenres.map(genre => genre.name).join(', ');
   };
 
+  const location = useLocation();
+
+  const cameBack = location.state?.from ?? '/';
+
   return (
     <>
-      <button onClick={() => navigate(-1)} className={css.btn}>
+      <Link className={css.btn} to={cameBack}>
         Go Back
-      </button>
+      </Link>
       {loading ? (
-        'Loading...'
+        <div className={css.loading}>
+          <ColorRing
+            visible={true}
+            height="80"
+            width="80"
+            ariaLabel="blocks-loading"
+            wrapperStyle={{ margin: ' auto' }}
+            wrapperClass="blocks-wrapper"
+            colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+          />
+        </div>
       ) : (
         <>
           <div className={css.imgWrap}>
-            <img
-              className={css.img}
-              alt={data.original_title}
-              src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
-            />
+            {data.poster_path ? (
+              <img
+                className={css.img}
+                alt={data.original_title}
+                src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
+              />
+            ) : (
+              <img className={css.img} src={noMovieImg} alt="not available" />
+            )}
+
             <div className={css.descrWrap}>
               <h1>
                 {data.original_title} ({getYear(data.release_date)})
@@ -65,18 +86,38 @@ const MovieDetails = () => {
           <div>
             <ul className={css.btnList}>
               <li>
-                <Link to={`/movies/${data.id}/cast`}>
+                <Link to="cast" state={{ from: cameBack }}>
                   <button className={css.castBtn}>Cast</button>
                 </Link>
               </li>
               <li>
-                <Link to={`/movies/${data.id}/reviews`}>
+                <Link to="reviews" state={{ from: cameBack }}>
                   <button className={css.reviewsBtn}>Reviews</button>
                 </Link>
               </li>
             </ul>
           </div>
-          <Suspense fallback={<div>Loading subpage...</div>}>
+          <Suspense
+            fallback={
+              <div className={css.loading}>
+                <ColorRing
+                  visible={true}
+                  height="80"
+                  width="80"
+                  ariaLabel="blocks-loading"
+                  wrapperStyle={{ margin: '0 auto' }}
+                  wrapperClass="blocks-wrapper"
+                  colors={[
+                    '#e15b64',
+                    '#f47e60',
+                    '#f8b26a',
+                    '#abbd81',
+                    '#849b87',
+                  ]}
+                />
+              </div>
+            }
+          >
             <Outlet />
           </Suspense>
         </>

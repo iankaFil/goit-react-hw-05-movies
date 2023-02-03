@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { NavLink, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import { searchMovie } from '../../shared/services/api';
 import css from './movies.module.css';
+import { ColorRing } from 'react-loader-spinner';
 
 const Movies = () => {
   const [data, setData] = useState(null);
@@ -12,6 +13,8 @@ const Movies = () => {
 
   const [query, setQuery] = useState(() => searchQuery || '');
 
+  const location = useLocation();
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -21,9 +24,13 @@ const Movies = () => {
         setLoading(false);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
-    getData();
+    if (searchQuery) {
+      getData();
+    }
   }, [searchQuery]);
 
   const handleChange = e => {
@@ -57,13 +64,29 @@ const Movies = () => {
       <ul className={css.list}>
         {searchQuery ? (
           loading ? (
-            'Loading...'
-          ) : (
+            <div className={css.loading}>
+              <ColorRing
+                visible={true}
+                height="80"
+                width="80"
+                ariaLabel="blocks-loading"
+                wrapperStyle={{ margin: 'auto' }}
+                wrapperClass="blocks-wrapper"
+                colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+              />
+            </div>
+          ) : data.length > 0 ? (
             data.map(({ title, id }) => (
               <li key={id} className={css.listItem}>
-                <NavLink to={`/movies/${id}`}>{title}</NavLink>
+                <Link state={{ from: location }} to={`/movies/${id}`}>
+                  {title}
+                </Link>
               </li>
             ))
+          ) : (
+            <p>
+              No movies with this title were found. Try entering another title
+            </p>
           )
         ) : (
           <p className={css.descr}></p>

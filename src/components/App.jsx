@@ -1,19 +1,17 @@
-// import Home from './Home/Home';
-// import Movies from './Movies/Movies';
-// import MovieDetails from './MovieDetails/MovieDetails';
-// import Cast from './Cast/Cast';
-// import Reviews from './Reviews/Reviews';
 import { Routes, Route, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import css from './app.module.css';
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
+import { NotFound } from './NotFound/NotFound';
+import { ColorRing } from 'react-loader-spinner';
+
+const Home = lazy(() => import('./Home/Home'));
+const Movies = lazy(() => import('./Movies/Movies'));
+const MovieDetails = lazy(() => import('./MovieDetails/MovieDetails'));
+const Cast = lazy(() => import('./Cast/Cast'));
+const Reviews = lazy(() => import('./Reviews/Reviews'));
 
 export const App = () => {
-  const Home = lazy(() => import('./Home/Home'));
-  const Movies = lazy(() => import('./Movies/Movies'));
-  const MovieDetails = lazy(() => import('./MovieDetails/MovieDetails'));
-  const Cast = lazy(() => import('./Cast/Cast'));
-  const Reviews = lazy(() => import('./Reviews/Reviews'));
   const StyledLink = styled(NavLink)`
     color: #e9e9e9;
     font-size: 30px;
@@ -37,15 +35,31 @@ export const App = () => {
 
         <StyledLink to="/movies">Movies</StyledLink>
       </nav>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/movies" element={<Movies />} />
-        <Route path="/movies/:movieId" element={<MovieDetails />}>
-          <Route path="cast" element={<Cast />} />
-          <Route path="reviews" element={<Reviews />} />
-        </Route>
-        <Route path="*" element={<Home />} />
-      </Routes>
+      <Suspense
+        fallback={
+          <div className={css.loading}>
+            <ColorRing
+              visible={true}
+              height="80"
+              width="80"
+              ariaLabel="blocks-loading"
+              wrapperStyle={{ margin: '0 auto' }}
+              wrapperClass="blocks-wrapper"
+              colors={['#e15b64', '#f47e60', '#f8b26a', '#abbd81', '#849b87']}
+            />
+          </div>
+        }
+      >
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/movies" element={<Movies />} />
+          <Route path="/movies/:movieId" element={<MovieDetails />}>
+            <Route path="cast" element={<Cast />} />
+            <Route path="reviews" element={<Reviews />} />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Suspense>
     </>
   );
 };
