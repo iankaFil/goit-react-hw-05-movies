@@ -1,30 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { ListMovies, MovieItem } from './home.styled';
 import { getTrendingMovies } from '../../shared/services/api';
 import css from './home.module.css';
+import Pagination from 'components/Pagination';
 import { ColorRing } from 'react-loader-spinner';
 
 const imgPlaceholder = './src/img/no-poster-available.jpg';
 const Home = () => {
-  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [movies, setMovies] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams({ page: 1 });
   const location = useLocation();
+  const params = useMemo(
+    () => Object.fromEntries([...searchParams]),
+    [searchParams]
+  );
+  const page = Number(params.page);
 
   useEffect(() => {
     const getData = async () => {
       try {
         setLoading(true);
-        const data = await getTrendingMovies();
-        setData(data);
+        const data = await getTrendingMovies(page);
+        setMovies(data);
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        alert(error.message);
       }
     };
     getData();
-  }, []);
+  }, [page]);
 
   return (
     <>
@@ -43,13 +49,9 @@ const Home = () => {
             />
           </div>
         ) : (
-          data.map(({ title, id, poster_path }) => (
+          movies.map(({ title, id, poster_path }) => (
             <MovieItem key={id} className={css.movieItem}>
-              <Link
-                to={`/movies/${id}`}
-                state={{ from: location }}
-                // className={css.movieItem}
-              >
+              <Link to={`/movies/${id}`} state={{ from: location }}>
                 <img
                   className={css.poster}
                   src={
@@ -65,6 +67,12 @@ const Home = () => {
           ))
         )}
       </ListMovies>
+      <Pagination
+        itemsPerPage={20}
+        totalItems={movies.total_results}
+        setSearchParams={setSearchParams}
+        params={params}
+      />
     </>
   );
 };

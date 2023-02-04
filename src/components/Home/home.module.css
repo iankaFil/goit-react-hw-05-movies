@@ -1,12 +1,7 @@
-/* .movieItem::before {
-    content: "";
-    background-image: url(../SVG/film.svg);
-    background-size: cover;
-    position: absolute;
-    width: 25px;
-    height: 25px;
-    left: -20px;
-} */
+.movieItem {
+    transform: scale(1);
+    transition: all 0.25s linear;
+}
 
 .mainTitle {
     padding: 20px 40px;
