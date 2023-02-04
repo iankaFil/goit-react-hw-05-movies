@@ -5,6 +5,7 @@ import { getTrendingMovies } from '../../shared/services/api';
 import css from './home.module.css';
 import { ColorRing } from 'react-loader-spinner';
 
+const imgPlaceholder = './src/img/no-poster-available.jpg';
 const Home = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,8 +28,8 @@ const Home = () => {
 
   return (
     <>
+      <h2 className={css.mainTitle}>Trending movies:</h2>
       <ListMovies>
-        <h2 className={css.title}>Trending movies:</h2>
         {loading ? (
           <div className={css.loading}>
             <ColorRing
@@ -42,14 +43,23 @@ const Home = () => {
             />
           </div>
         ) : (
-          data.map(({ title, id }) => (
-            <MovieItem key={id}>
+          data.map(({ title, id, poster_path }) => (
+            <MovieItem key={id} className={css.movieItem}>
               <Link
                 to={`/movies/${id}`}
                 state={{ from: location }}
-                className={css.movieItem}
+                // className={css.movieItem}
               >
-                {title}
+                <img
+                  className={css.poster}
+                  src={
+                    poster_path
+                      ? `https://image.tmdb.org/t/p/w500/${poster_path}`
+                      : imgPlaceholder
+                  }
+                  alt={title}
+                />
+                <p className={css.title}>{title}</p>
               </Link>
             </MovieItem>
           ))

@@ -1,4 +1,4 @@
-.movieItem::before {
+/* .movieItem::before {
     content: "";
     background-image: url(../SVG/film.svg);
     background-size: cover;
@@ -6,12 +6,32 @@
     width: 25px;
     height: 25px;
     left: -20px;
+} */
+
+.mainTitle {
+    padding: 20px 40px;
+    font-size: 30px;
 }
+
+.title {
+    font-size: 18px;
+    width: 300px;
+    margin: 10px 0;
+}
+
+.poster {
+    width: 300px;
+    display: block;
+    border-radius: 3px;
+}
+
 
 .movieItem:hover,
 .movieItem:focus {
     color: #7400bc;
     cursor: pointer;
+    transform: scale(1.1);
+    transition: all 0.25s linear;
 }
 
 .loading {
