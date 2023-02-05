@@ -3,6 +3,7 @@ import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import { searchMovie } from '../../shared/services/api';
 import css from './movies.module.css';
 import { ColorRing } from 'react-loader-spinner';
+import Paginator from 'components/Pagination/Paginator';
 
 const Movies = () => {
   const [data, setData] = useState(null);
@@ -92,6 +93,12 @@ const Movies = () => {
           <p className={css.descr}></p>
         )}
       </ul>
+      <Paginator
+        totalPages={totalPages}
+        setSearchParams={setSearchParams}
+        params={params}
+        currentPage={Number(params?.page - 1) || 0}
+      />
     </>
   );
 };

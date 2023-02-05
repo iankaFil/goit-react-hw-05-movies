@@ -23,7 +23,7 @@
 
 .movieItem:hover,
 .movieItem:focus {
-    color: #7400bc;
+    color: #7505bb;
     cursor: pointer;
     transform: scale(1.1);
     transition: all 0.25s linear;

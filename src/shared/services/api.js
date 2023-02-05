@@ -8,11 +8,16 @@ const instance = axios.create({
   },
 });
 
-export async function getTrendingMovies() {
+export async function getTrendingMovies(page) {
   const query = `/trending/movie/week`;
   try {
-    const { data } = await instance.get(query);
-    return data.results;
+    const { data } = await instance.get(query, {
+      params: {
+        page,
+      },
+    });
+
+    return data;
   } catch (error) {
     throw error;
   }
@@ -48,10 +53,14 @@ export async function getMovieReviews(id) {
   }
 }
 
-export async function searchMovie(queryString) {
+export async function searchMovie(queryString, page) {
   const query = `/search/movie?query=${queryString}`;
   try {
-    const { data } = await instance.get(query);
+    const data = await instance.get(query, {
+      params: {
+        page,
+      },
+    });
     return data;
   } catch (error) {
     throw error;

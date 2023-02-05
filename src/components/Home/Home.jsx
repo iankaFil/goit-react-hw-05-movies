@@ -3,7 +3,7 @@ import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { ListMovies, MovieItem } from './home.styled';
 import { getTrendingMovies } from '../../shared/services/api';
 import css from './home.module.css';
-import Pagination from 'components/Pagination';
+import Paginator from 'components/Pagination/Paginator';
 import { ColorRing } from 'react-loader-spinner';
 
 const imgPlaceholder = './src/img/no-poster-available.jpg';
@@ -16,17 +16,20 @@ const Home = () => {
     () => Object.fromEntries([...searchParams]),
     [searchParams]
   );
-  const page = Number(params.page);
-
+  const page = Number(params.page || 1);
+  const [totalPages, settotalPages] = useState(0);
   useEffect(() => {
     const getData = async () => {
       try {
         setLoading(true);
         const data = await getTrendingMovies(page);
-        setMovies(data);
+        setMovies(data.results);
+        settotalPages(data.total_pages);
         setLoading(false);
       } catch (error) {
         alert(error.message);
+      } finally {
+        setLoading(false);
       }
     };
     getData();
@@ -67,11 +70,11 @@ const Home = () => {
           ))
         )}
       </ListMovies>
-      <Pagination
-        itemsPerPage={20}
-        totalItems={movies.total_results}
+      <Paginator
+        totalPages={totalPages}
         setSearchParams={setSearchParams}
         params={params}
+        currentPage={Number(params?.page - 1) || 0}
       />
     </>
   );
