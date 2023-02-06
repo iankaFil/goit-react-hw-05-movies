@@ -1,48 +1,66 @@
-import { useState, useEffect } from 'react';
-import { Link, useSearchParams, useLocation } from 'react-router-dom';
+import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { searchMovie } from '../../shared/services/api';
 import css from './movies.module.css';
 import { ColorRing } from 'react-loader-spinner';
 import Paginator from 'components/Pagination/Paginator';
-
+import { LinkToDetails } from './Movies.styled';
 const Movies = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams({
+    page: 1,
+    query: '',
+  });
   const searchQuery = searchParams.get('query');
 
-  const [query, setQuery] = useState(() => searchQuery || '');
-
+  // const [query, setQuery] = useState(() => searchQuery || '');
+  const [totalPages, settotalPages] = useState(0);
   const location = useLocation();
+  const params = useMemo(
+    () => Object.fromEntries([...searchParams]),
+    [searchParams]
+  );
+  const page = Number(params.page || 1);
+  const { query } = params;
+
+  const [inputValue, setInputValue] = useState(query || '');
 
   useEffect(() => {
+    if (!query) return;
     const getData = async () => {
       try {
         setLoading(true);
-        const { results } = await searchMovie(searchQuery);
-        setData(results);
+        const { data } = await searchMovie(query, page);
+        setData(data.results);
         setLoading(false);
+        settotalPages(data.total_pages);
       } catch (error) {
         console.log(error);
       } finally {
         setLoading(false);
       }
     };
-    if (searchQuery) {
-      getData();
-    }
-  }, [searchQuery]);
+
+    getData();
+  }, [query, page]);
 
   const handleChange = e => {
-    setQuery(e.target.value);
+    setInputValue(e.target.value);
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    setSearchParams({ query: query });
-  };
 
+    const searchQuery = e.target.elements.search.value.trim();
+    if (searchQuery === '') {
+      e.target.reset();
+      return;
+    }
+    setSearchParams({ query: searchQuery, page: 1 });
+    e.target.reset();
+  };
   return (
     <>
       <div className={css.wrap}>
@@ -50,7 +68,7 @@ const Movies = () => {
 
         <form onSubmit={handleSubmit} className={css.movieForm}>
           <input
-            value={query}
+            value={inputValue}
             onChange={handleChange}
             name="search"
             type="text"
@@ -77,11 +95,15 @@ const Movies = () => {
               />
             </div>
           ) : data.length > 0 ? (
-            data.map(({ title, id }) => (
+            data.map(({ title, id, poster_path }) => (
               <li key={id} className={css.listItem}>
-                <Link state={{ from: location }} to={`/movies/${id}`}>
+                <LinkToDetails
+                  state={{ from: location }}
+                  to={`/movies/${id}`}
+                  cover={poster_path}
+                >
                   {title}
-                </Link>
+                </LinkToDetails>
               </li>
             ))
           ) : (

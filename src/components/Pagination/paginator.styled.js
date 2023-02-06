@@ -5,7 +5,7 @@ export const StyledPaginate = styled(ReactPaginate)`
   display: flex;
   justify-content: center;
   gap: 15px;
-  margin: 10px 0;
+  margin: 40px 0 ;
   font-size: 18px;
   .selected {
     color: white;

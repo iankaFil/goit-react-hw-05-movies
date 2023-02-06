@@ -91,7 +91,9 @@
 .listItem:focus {
     color: orange;
     cursor: pointer;
+
 }
+
 
 .loading {
     display: flex;

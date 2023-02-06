@@ -48,7 +48,8 @@
 }
 
 .castBtn {
-    padding: 9px;
+    padding: 9px 9px 9px 25px;
+    position: relative;
     background-color: #7400bc;
     font-size: 16px;
     border: none;
@@ -64,7 +65,7 @@
     position: absolute;
     width: 15px;
     height: 15px;
-    left: 125px;
+    left: 25px;
 }
 
 .castBtn:hover {
@@ -74,7 +75,7 @@
 
 .reviewsBtn {
     position: relative;
-    padding: 9px 9px 9px 25px;
+    padding: 9px 9px 9px 30px;
     background-color: #7400bc;
     font-size: 16px;
     width: 110px;
@@ -91,7 +92,7 @@
     position: absolute;
     width: 15px;
     height: 15px;
-    left: 10px;
+    left: 15px;
     top: 10px;
 }
 
